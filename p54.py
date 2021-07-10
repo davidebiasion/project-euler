@@ -14,11 +14,12 @@ Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
 '''
 
 def score(hand):
-	s = 0
+	#s = 0
 
 	possible_values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14']
 	possible_suits = ['H', 'D', 'C', 'S']
 
+	'''
 	values = []
 	for card in hand:
 		if card[0]=='T':
@@ -34,9 +35,30 @@ def score(hand):
 		else:
 			values.append(card[0])
 	values = sorted(values)
+	'''
+
+	sorted_hand = []
+	for card in hand:
+		if card[0]=='T':
+			sorted_hand.append(['10', card[1]])
+		elif card[0]=='J':
+			sorted_hand.append(['11', card[1]])
+		elif card[0]=='Q':
+			sorted_hand.append(['12', card[1]])
+		elif card[0]=='K':
+			sorted_hand.append(['13', card[1]])
+		elif card[0]=='A':
+			sorted_hand.append(['14', card[1]])
+		else:
+			sorted_hand.append([card[0], card[1]])
+	sorted_hand = sorted(sorted_hand, key=lambda card: int(card[0]))
+
+	values = []
+	for card in sorted_hand:
+		values.append(card[0])
 
 	suits = []
-	for card in hand:
+	for card in sorted_hand:
 		suits.append(card[1])
 
 	same_suit = False
@@ -52,51 +74,67 @@ def score(hand):
 				consec_values = True
 				break
 
-	three_kind_pair = (values[0]==values[1] and values[1]==values[2]) and (values[3]==values[4])
-	pair_three_kind = (values[0]==values[1]) and (values[2]==values[3] and values[3]==values[4])
+	three_kind_pair = (values[0]==values[1] and values[1]==values[2] and suits[0]!=suits[1] and suits[1]!=suits[2] and suits[0]!=suits[2]) and (values[3]==values[4] and suits[3]!=suits[4])
+	pair_three_kind = (values[0]==values[1] and suits[0]!=suits[1]) and (values[2]==values[3] and values[3]==values[4] and suits[2]!=suits[3] and suits[3]!=suits[4] and suits[2]!=suits[4])
+
+	four_kind_0_3 = values[0]==values[1] and values[1]==values[2] and values[2]==values[3] and suits[0]!=suits[1] and suits[1]!=suits[2] and suits[2]!=suits[3] and suits[0]!=suits[2] and suits[0]!=suits[3] and suits[1]!=suits[3]
+	four_kind_1_4 = values[1]==values[2] and values[2]==values[3] and values[3]==values[4] and suits[1]!=suits[2] and suits[2]!=suits[3] and suits[3]!=suits[4] and suits[1]!=suits[3] and suits[1]!=suits[4] and suits[2]!=suits[4]
 
 	# Royal Flush: Ten, Jack, Queen, King, Ace, in same suit.
 	if same_suit and values==['10', '11', '12', '13', '14']:
-		s = 10
+		return 10, values
 
 	# Straight Flush: All cards are consecutive values of same suit.
-	elif consec_values and same_suit:
-		s = 9
+	if consec_values and same_suit:
+		return 9, values
 
 	# Four of a Kind: Four cards of the same value.
-	elif (values[0]==values[1] and values[1]==values[2] and values[2]==values[3]) or (values[1]==values[2] and values[2]==values[3] and values[3]==values[4]):
-		s = 8
+	if four_kind_0_3 or four_kind_1_4:
+		return 8, values
 
 	# Full House: Three of a kind and a pair.
-	# è sbagliato, devono essere di semi diversi
-	elif three_kind_pair or pair_three_kind:
-		s = 7
+	if three_kind_pair or pair_three_kind:
+		return 7, values
 
 	# Flush: All cards of the same suit.
 	elif same_suit:
-		s = 6
+		return 6, values
 
 	# Straight: All cards are consecutive values.
 	elif consec_values:
-		s = 5
-
+		return 5, values
+	
 	# Three of a Kind: Three cards of the same value.
-	elif (values[0]==values[1] and values[1]==values[2]) or (values[1]==values[2] and values[2]==values[3]) or (values[2]==values[3] and values[3]==values[4]):
-		s = 4
-
+	three_kind_0_2 = values[0]==values[1] and values[1]==values[2] and suits[0]!=suits[1] and suits[1]!=suits[2] and suits[0]!=suits[2]
+	three_kind_1_3 = values[1]==values[2] and values[2]==values[3] and suits[1]!=suits[2] and suits[2]!=suits[3] and suits[1]!=suits[3]
+	three_kind_2_4 = values[2]==values[3] and values[3]==values[4] and suits[2]!=suits[3] and suits[3]!=suits[4] and suits[2]!=suits[4]
+	#elif (values[0]==values[1] and values[1]==values[2]) or (values[1]==values[2] and values[2]==values[3]) or (values[2]==values[3] and values[3]==values[4]):
+	if three_kind_0_2 or three_kind_1_3 or three_kind_2_4:
+		return 4, values
+	
+	
 	# Two Pairs: Two different pairs.
-	elif (values[0]==values[1] and values[2]==values[3]) or (values[0]==values[1] and values[3]==values[4]) or (values[1]==values[2] and values[3]==values[4]):
-		s = 3
+	pair_01_23 = values[0]==values[1] and suits[0]!=suits[1] and values[2]==values[3] and suits[2]!=suits[3] and values[0]!=values[2]
+	pair_01_34 = values[0]==values[1] and suits[0]!=suits[1] and values[3]==values[4] and suits[3]!=suits[4] and values[0]!=values[3]
+	pair_12_34 = values[1]==values[2] and suits[1]!=suits[2] and values[3]==values[4] and suits[3]!=suits[4] and values[1]!=values[3]
+	#elif (values[0]==values[1] and values[2]==values[3]) or (values[0]==values[1] and values[3]==values[4]) or (values[1]==values[2] and values[3]==values[4]):
+	if (pair_01_23 or pair_01_34 or pair_12_34):
+		return 3, values
 
 	# One Pair: Two cards of the same value.
-	elif values[0]==values[1] or values[1]==values[2] or values[2]==values[3] or values[3]==values[4]:
-		s = 2
+	pair_01 = values[0]==values[1] and suits[0]!=suits[1]
+	pair_12 = values[1]==values[2] and suits[1]!=suits[2]
+	pair_23 = values[2]==values[3] and suits[2]!=suits[3]
+	pair_34 = values[3]==values[4] and suits[3]!=suits[4]
+	#elif values[0]==values[1] or values[1]==values[2] or values[2]==values[3] or values[3]==values[4]:
+	if pair_01 or pair_12 or pair_23 or pair_34:
+		return 2, values
 
 	# High Card: Highest value card.
-	else:
-		s = 1
+	return 1, values
+	
 
-	return s, values
+	#return s, values
 
 
 with open('p054_poker.txt') as f:
@@ -306,10 +344,6 @@ with open('p054_poker.txt') as f:
 
 			# One Pair: Two cards of the same value.
 			if s1==2:
-				print(h1)
-				print(h2)
-
-
 				pair_start_1 = -1
 				pair_start_2 = -1
 				for i in range(4):
@@ -339,7 +373,6 @@ with open('p054_poker.txt') as f:
 							winning_hands_2+=1
 							break
 
-				break
 
 			# High Card: Highest value card.
 			if s1==1:

@@ -1,23 +1,27 @@
-v = 'ABC'
-print(v[0]!=v[1] and v[1]!=v[2] and v[0]!=v[2])
+v = 'ABCD'
+print(v[0]!=v[1] and v[1]!=v[2] and v[2]!=v[3] and v[0]!=v[2] and v[0]!=v[3] and v[1]!=v[3])
 
 h = ['8C', 'TS', 'KC', '9H']
-values = []
+sorted_hand = []
 for card in h:
 	if card[0]=='T':
-		values.append(['10', card[1]])
+		sorted_hand.append(['10', card[1]])
 	elif card[0]=='J':
-		values.append(['11', card[1]])
+		sorted_hand.append(['11', card[1]])
 	elif card[0]=='Q':
-		values.append(['12', card[1]])
+		sorted_hand.append(['12', card[1]])
 	elif card[0]=='K':
-		values.append(['13', card[1]])
+		sorted_hand.append(['13', card[1]])
 	elif card[0]=='A':
-		values.append(['14', card[1]])
+		sorted_hand.append(['14', card[1]])
 	else:
-		values.append([card[0], card[1]])
+		sorted_hand.append([card[0], card[1]])
 
 
 
-print(values)
-print(sorted(values, key=lambda card: int(card[0])))
+print(sorted_hand)
+print(sorted(sorted_hand, key=lambda card: int(card[0])))
+
+
+
+v[0]!=v[1] and v[1]!=v[2] and v[0]!=v[2]
