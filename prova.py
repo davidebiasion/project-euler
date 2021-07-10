@@ -21,3 +21,4 @@ for card in h:
 
 print(values)
 print(sorted(values, key=lambda card: int(card[0])))
+print()
