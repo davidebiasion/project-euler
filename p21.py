@@ -4,15 +4,16 @@ import math
 
 def proper_divisors(n):
 	pd_sum = 1
+	sqrt = int(math.sqrt(n))
+
+	if sqrt*sqrt==n:
+		pd_sum+=sqrt
+		sqrt-=1	
+
 	i = 2
-
-	limit = math.sqrt(n)
-	if n==limit*limit:
-		limit-=1
-
-	while i<=limit:
+	while i<=sqrt:
 		if n%i==0:
-			pd_sum+=i+n//i
+			pd_sum = pd_sum+i+n//i
 
 		i+=1
 
